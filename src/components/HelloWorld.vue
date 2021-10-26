@@ -1,46 +1,84 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <div class="nav-content">
+      <b-button class="nav-button" @click="goToNewPage('criarAlbum')">
+        Criar Album de Figurinha
+      </b-button>
+      <b-button class="nav-button" @click="goToNewPage('criarFigurinha')">
+        Criar Figurinha
+      </b-button>
+      <b-button class="nav-button" @click="goToNewPage('visualizarAlbum')">
+        Visualizar meu Album de Figurinha
+      </b-button>
+      <b-button class="nav-button" @click="goToNewPage('visualizarInventario')">
+        Visualizar meu inventário
+      </b-button>
+    </div>
+    <div class="body-content">
+      <div v-if="!page">
+        <h2>Seja Bem vindo ao album de figurinhas de carros!</h2>
+      </div>
+      <FormAlbum v-else-if="page === 'criarAlbum'"/>
+      <FormFigurinha v-else-if="page === 'criarFigurinha'"/>
+      <ListAlbum v-else-if="page === 'visualizarAlbum'"/>
+      <ListInventario v-else-if="page === 'visualizarInventario'"/>
+    </div>
   </div>
 </template>
 
 <script>
+import FormAlbum from "./FormAlbum.vue";
+import FormFigurinha from "./FormFigurinha.vue";
+import ListAlbum from "./ListAlbum.vue";
+import ListInventario from "./ListInventario.vue";
+import Api from '../services/api';
+
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+  components: {
+    FormAlbum,
+    ListAlbum,
+    FormFigurinha,
+    ListInventario,
+  },
+  
+  data() {
+    return {
+      page: ''
+    }
+  },
+
+  mounted() {
+    Api.list('usuario').then(resposta => {
+      console.log(resposta);
+    });
+  },
+
+  methods: {
+    goToNewPage(newPage) {
+      this.page = newPage;
+    },
+  },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.nav-content {
+  border-bottom: 1px solid #ccc;
+}
+.nav-button {
+  margin-right: 1rem;
+}
+.body-content {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 800px;
+  margin-top: 2rem;
+  border: 2px solid #42b983;
+  border-radius: 5px;
+  padding: 2rem;
+}
 h3 {
   margin: 40px 0 0;
 }
